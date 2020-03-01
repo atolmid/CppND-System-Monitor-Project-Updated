@@ -15,25 +15,25 @@ Process::Process(int pid):pid_(pid){
     cpuUtilization_ = Process::CpuUtilization();
 }
 
-// TODO: Return this process's ID
+// Return this process's ID
 int Process::Pid() { return pid_; }
 
-// TODO: Return this process's CPU utilization
+//  Return this process's CPU utilization
 float Process::CpuUtilization() { 
-
-    return 0; 
+    long seconds = LinuxParser::UpTime() - (LinuxParser::UpTime(pid_)/sysconf(_SC_CLK_TCK));
+    return (LinuxParser::ActiveJiffies(pid_)/sysconf(_SC_CLK_TCK))/seconds; 
 }
 
-// TODO: Return the command that generated this process
+// Return the command that generated this process
 string Process::Command() { return LinuxParser::Command(pid_); }
 
-// TODO: Return this process's memory utilization
+// Return this process's memory utilization
 string Process::Ram() { return LinuxParser::Ram(pid_); }
 
-// TODO: Return the user (name) that generated this process
+// Return the user (name) that generated this process
 string Process::User() { return LinuxParser::User(pid_); }
 
-// TODO: Return the age of this process (in seconds)
+// Return the age of this process (in seconds)
 long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
 
 // TODO: Overload the "less than" comparison operator for Process objects
