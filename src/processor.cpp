@@ -5,16 +5,17 @@
 
 using std::string;
 
-// TODO: Return the aggregate CPU utilization
+// Return the aggregate CPU utilization
 float Processor::Utilization() { 
-    string key;
+   /*string key;
     string usertimeSt, guestSt, nicetimeSt, guestniceSt; 
     string idletimeSt, ioWaitSt, systemtimeSt; 
     string irqSt, softIrqSt, virtalltimeSt;
     string stealSt;
     string line;
-    std::ifstream stream(LinuxParser::kProcDirectory + LinuxParser::kStatFilename);
-    if (stream.is_open()) {
+    std::ifstream stream(LinuxParser::kProcDirectory + LinuxParser::kStatFilename);*/
+    // Use LinuxParser::CpuUtilization() instead?
+    /*if (stream.is_open()) {
       if (stream.is_open()) {
         std::getline(stream, line);
         std::istringstream linestream(line);
@@ -30,5 +31,6 @@ float Processor::Utilization() {
     int virtalltime = std::stoi(guestSt) + std::stoi(guestniceSt);
     int totaltime = usertime + nicetime + systemalltime + idlealltime + std::stoi(stealSt) + virtalltime;
 
-    return (totaltime-idlealltime)/(float)totaltime; 
+    return (totaltime-idlealltime)/(float)totaltime; */
+    return (LinuxParser::ActiveJiffies()/(float)(LinuxParser::Jiffies()));
 }
