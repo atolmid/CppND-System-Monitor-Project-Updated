@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 
 #include "linux_parser.h"
 
@@ -131,7 +132,7 @@ long LinuxParser::IdleJiffies() {
 
 // TODO: Read and return the number of active jiffies for a PID
 long LinuxParser::ActiveJiffies(int pid) { 
-  long activeJiffies;
+  long activeJiffies = 0;
   string value, line;
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
   if (stream.is_open()) {
@@ -145,7 +146,7 @@ long LinuxParser::ActiveJiffies(int pid) {
       i++;
     }
   }
-  return 0; 
+  return activeJiffies; 
 }
 
 
@@ -170,6 +171,11 @@ vector<string> LinuxParser::CpuUtilization() {
   }
   return cpuValues; 
   }
+
+float LinuxParser::CpuUtilization(int pid) { 
+    long seconds = LinuxParser::UpTime() - (LinuxParser::UpTime(pid)/sysconf(_SC_CLK_TCK));
+    return (LinuxParser::ActiveJiffies(pid)/sysconf(_SC_CLK_TCK))/seconds; 
+}
 
 // Read and return the total number of processes
 int LinuxParser::TotalProcesses() { 
@@ -222,13 +228,18 @@ string LinuxParser::Command(int pid) {
 string LinuxParser::Ram(int pid) { 
   string key, value;
   string line;
+  double lRam;
+  std::stringstream sRam;
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatusFilename);
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
         if (key == "VmSize:") {
-          return value;          
+          lRam = stod(value);
+          lRam /= 1024;
+          sRam << std::fixed << std::setprecision(3) << lRam;
+          return sRam.str();          
         }
       }
     }
