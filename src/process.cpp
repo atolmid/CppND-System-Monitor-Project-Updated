@@ -3,7 +3,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "process.h"
 
@@ -21,10 +20,7 @@ int Process::Pid() { return pid_; }
 
 //  Return this process's CPU utilization
 float Process::CpuUtilization() { 
-    std::cout << LinuxParser::CpuUtilization(pid_) << std::endl;
     return LinuxParser::CpuUtilization(pid_);
-    //long seconds = LinuxParser::UpTime() - (LinuxParser::UpTime(pid_)/sysconf(_SC_CLK_TCK));
-    //return (LinuxParser::ActiveJiffies(pid_)/sysconf(_SC_CLK_TCK))/seconds; 
 }
 
 // Return the command that generated this process
@@ -42,6 +38,5 @@ long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
 bool Process::operator<(Process const& a) const { 
-    //return (pid_ > (a.pid_));
     return (cpuUtilization_ > (a.cpuUtilization_)); 
 }
